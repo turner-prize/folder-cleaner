@@ -29,11 +29,12 @@ for dirname, dirnames, filenames in os.walk(MyDir,topdown=False):
 #so "Atlanta.S01E01" becomes "Atlanta"
 for dirname, dirnames, filenames in os.walk(MyDir,topdown=False):
     for files in filenames:
-        foundit = findit.search(files.upper())
-        rubbish =  foundit.group()
-        x = files.upper().find(rubbish) #x is an integer
-        if not files[:x].title() in ShowNames:
-            ShowNames.append(files[:x].title())
+        if foundit:
+            foundit = findit.search(files.upper())
+            rubbish =  foundit.group()
+            x = files.upper().find(rubbish) #x is an integer
+            if not files[:x].title() in ShowNames:
+                ShowNames.append(files[:x].title())
 
 for n in ShowNames:
     #creates the folders from the list of the shownames, if they dont already exist.

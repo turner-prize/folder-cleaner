@@ -6,6 +6,7 @@ import re
 import string
 
 def ChangeDashAndSpaceToNothing(MyDir):
+    #removes dashes '-' and spaces ' ' in the S01E01 section of filenames to make them easier to work with
     findit = re.compile(r'S\d{1,2}.E\d{1,2}')
     for dirname, dirnames, filenames in os.walk(MyDir,topdown=False):
             for files in filenames:
@@ -46,6 +47,7 @@ def DeleteLittleFiles(MyDir):
             oldname = "%s/%s" % (dirname,files)
             if os.path.getsize(oldname) <500000:
                 os.remove(oldname)
+                print oldname
 
 def DeleteEmptyFolders(MyDir):
     for dirname, dirnames, filenames in os.walk(MyDir,topdown=False):
@@ -75,6 +77,7 @@ def CreateShowList(MyDir):
 
 def ChangeShowNames(MyDir):
 #checks folder for TV Shows, adds them to list to compare later.
+#this whole function probably needs a re-write
     ShowNames = []
     findit = re.compile(r'.S\d{1,2}E\d{1,2}')
     sYear = re.compile(r'\d{4}\s')
@@ -93,8 +96,8 @@ def ChangeShowNames(MyDir):
                     ShowNames.append(MyShow.upper())
                 if "Dcs" in MyShow:
                     MyShow = MyShow.replace("Dcs ","")
-                if "Marvel" or "Marvels" in MyShow:
-                    MyShow = re.sub(r"Marvel\s|Marvels\s", "", MyShow)
+                if "Marvel" or "Marvels" or "Marvel's" in MyShow:
+                    MyShow = re.sub(r"Marvel\s|Marvels\s|Marvel's\s", "", MyShow,flags=re.I)
                 if " - " in MyShow:
                     MyShow = MyShow.replace(" - "," ")
                 if "SAMPLE" in MyShow.upper():
@@ -107,8 +110,9 @@ def ChangeShowNames(MyDir):
                 try:
                     os.rename(os.path.join(dirname, files),os.path.join(dirname, MyShow))
                 except:
-                    print 'error! changeshownames'
-                    print files
+                    # maybe need to make a duplicates folder to chuck this in to keep it clean?
+                    # or change the name to 'potential duplicate & showname'
+                    print 'Potential duplicate: ' + files
 
 def MoveFiles(MyDir):
     #finds any instance of the new folder names within each file, and moves the file to them if there is.
@@ -127,31 +131,15 @@ def RemoveEmpties(MyDir):
         if not os.listdir(dirname):
             os.rmdir(dirname)
 
-def music(fPath):
-    try:
-        tag = TinyTag.get(fPath)
-        if tag:
-            filename, file_extension = os.path.splitext(fPath)
-            if file_extension != '.mp4':
-                print fPath
-                return True
-    except:
-        return False
-
-def MoveToMusic(OldPath,filename):
-    MusicPath = os.path.join(r'/mnt/usb/Dan/Music',filename)
-    os.rename(OldPath,MusicPath)
-
-
 def DoTheLot():
 	MyDir = (r'D:\Dan\TV')
-	DeleteLittleFiles(MyDir)
-	UnpackFiles(MyDir)
-	RemoveEmpties(MyDir)
-	ChangeDashAndSpaceToNothing(MyDir)
-	ChangeShowNames(MyDir)
-	CreateShowList(MyDir)
-	MoveFiles(MyDir)
+	#DeleteLittleFiles(MyDir)
+	#UnpackFiles(MyDir)
+	#RemoveEmpties(MyDir)
+	#ChangeDashAndSpaceToNothing(MyDir)
+	#ChangeShowNames(MyDir)
+	#CreateShowList(MyDir)
+	#MoveFiles(MyDir)
 	CreateSeasonFolders(MyDir)
 
 if __name__ == "__main__":

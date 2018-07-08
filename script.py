@@ -138,5 +138,5 @@ MyShow = re.sub(r"((Marvel?\S{1,2}|Dcs)+?(\s|\.))|(\d{4})", "", MyShow,flags=re.
 
 print MyShow
 
-#if __name__ == "__main__":
-#    DoTheLot()
+if __name__ == "__main__":
+    DoTheLot()

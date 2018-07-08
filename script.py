@@ -80,7 +80,6 @@ def ChangeShowNames(MyDir):
 #this whole function probably needs a re-write
     ShowNames = []
     findit = re.compile(r'.S\d{1,2}E\d{1,2}')
-    sYear = re.compile(r'\d{4}\s')
     for dirname, dirnames, filenames in os.walk(MyDir,topdown=False):
         for files in filenames:
             foundit = re.search(findit,files.upper())
@@ -88,25 +87,16 @@ def ChangeShowNames(MyDir):
                 rubbish =  foundit.group()
                 x = files.upper().find(rubbish) #x is an integer
                 MyShow =  files[:x].title() + rubbish
-                MyShow = MyShow.replace("."," ")
-                foundYear = re.search(sYear,MyShow)
-                if foundYear:
-                    MyShow = re.sub(r'\d{4}\s',"",MyShow)
                 if not files[:x].title() in ShowNames:
                     ShowNames.append(MyShow.upper())
-                if "Dcs" in MyShow:
-                    MyShow = MyShow.replace("Dcs ","")
-                if "Marvel" or "Marvels" or "Marvel's" in MyShow:
-                    MyShow = re.sub(r"Marvel\s|Marvels\s|Marvel's\s", "", MyShow,flags=re.I)
-                if " - " in MyShow:
-                    MyShow = MyShow.replace(" - "," ")
+                #below captures a dash with single or double spaces around it, or double spaces in general, and periods to change to a single space.
+                MyShow = re.sub(r"(\s{1,2}-\s{1,2}|\s\s|(\.))", " ", MyShow,flags=re.I)
+                MyShow = re.sub(r"((Marvel?\S{1,2}|Dcs)+?(\s|\.))|(\d{4})", "", MyShow,flags=re.I)
                 if "SAMPLE" in MyShow.upper():
                     os.remove(os.path.join(MyDir,MyShow))
                     break
-                if "S H I E L D"in MyShow:
-                    MyShow = MyShow.replace("S H I E L D","SHIELD")
+                MyShow = MyShow.replace("S H I E L D","SHIELD")
                 MyShow = MyShow + '.mkv'
-		MyShow = re.sub("  "," ",MyShow)
                 try:
                     os.rename(os.path.join(dirname, files),os.path.join(dirname, MyShow))
                 except:
@@ -133,14 +123,20 @@ def RemoveEmpties(MyDir):
 
 def DoTheLot():
 	MyDir = (r'D:\Dan\TV')
-	#DeleteLittleFiles(MyDir)
-	#UnpackFiles(MyDir)
-	#RemoveEmpties(MyDir)
-	#ChangeDashAndSpaceToNothing(MyDir)
-	#ChangeShowNames(MyDir)
-	#CreateShowList(MyDir)
-	#MoveFiles(MyDir)
+	DeleteLittleFiles(MyDir)
+	UnpackFiles(MyDir)
+	RemoveEmpties(MyDir)
+	ChangeDashAndSpaceToNothing(MyDir)
+	ChangeShowNames(MyDir)
+	CreateShowList(MyDir)
+	MoveFiles(MyDir)
 	CreateSeasonFolders(MyDir)
 
-if __name__ == "__main__":
-    DoTheLot()
+x = "Marvel's.Agents.of.sheild.se1e01.2017"
+MyShow = re.sub(r"(\s{1,2}-\s{1,2}|\s\s|(\.))", " ", x,flags=re.I)
+MyShow = re.sub(r"((Marvel?\S{1,2}|Dcs)+?(\s|\.))|(\d{4})", "", MyShow,flags=re.I)
+
+print MyShow
+
+#if __name__ == "__main__":
+#    DoTheLot()

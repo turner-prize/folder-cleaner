@@ -132,11 +132,5 @@ def DoTheLot():
 	MoveFiles(MyDir)
 	CreateSeasonFolders(MyDir)
 
-x = "Marvel's.Agents.of.sheild.se1e01.2017"
-MyShow = re.sub(r"(\s{1,2}-\s{1,2}|\s\s|(\.))", " ", x,flags=re.I)
-MyShow = re.sub(r"((Marvel?\S{1,2}|Dcs)+?(\s|\.))|(\d{4})", "", MyShow,flags=re.I)
-
-print MyShow
-
 if __name__ == "__main__":
     DoTheLot()
